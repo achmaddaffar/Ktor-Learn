@@ -1,7 +1,13 @@
 package com.daffa
 
-import io.ktor.server.application.*
+import com.daffa.di.mainModule
 import com.daffa.plugins.*
+import io.ktor.server.application.*
+import io.ktor.server.application.*
+import io.ktor.server.application.*
+import org.koin.dsl.module
+import org.koin.ktor.ext.inject
+import org.koin.ktor.plugin.Koin
 
 fun main(args: Array<String>): Unit =
     io.ktor.server.netty.EngineMain.main(args)
@@ -14,4 +20,8 @@ fun Application.module() {
     configureSerialization()
 //    configureSockets()
     configureRouting()
+
+    install(Koin) {
+        modules(mainModule)
+    }
 }
