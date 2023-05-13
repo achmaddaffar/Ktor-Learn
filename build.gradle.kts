@@ -18,6 +18,12 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -57,4 +63,11 @@ dependencies {
 
     // Koin for JUnit 5
     testImplementation("io.insert-koin:koin-test-junit5:$koin_version")
+
+    // Truth
+    testImplementation("com.google.truth:truth:1.1.3")
+
+    // GSON
+    implementation("com.google.code.gson:gson:2.10.1")
+    testImplementation("org.testng:testng:7.1.0")
 }

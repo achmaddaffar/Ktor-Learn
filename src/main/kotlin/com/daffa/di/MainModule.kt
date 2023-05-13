@@ -1,7 +1,7 @@
 package com.daffa.di
 
-import com.daffa.controller.user.UserController
-import com.daffa.controller.user.UserControllerImpl
+import com.daffa.data.repository.user.UserRepository
+import com.daffa.data.repository.user.UserRepositoryImpl
 import com.daffa.util.Constants
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
@@ -14,7 +14,7 @@ val mainModule = module {
         client.getDatabase(Constants.DATABASE_NAME)
     }
 
-    single<UserController> {
-        UserControllerImpl(get())
+    single<UserRepository> {
+        UserRepositoryImpl(get())
     }
 }

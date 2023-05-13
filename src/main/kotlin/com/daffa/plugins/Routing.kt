@@ -1,14 +1,17 @@
 package com.daffa.plugins
 
-import com.daffa.routes.userRoutes
+import com.daffa.data.repository.user.UserRepository
+import com.daffa.routes.createUserRoutes
+import com.daffa.routes.loginUser
 import io.ktor.server.routing.*
-import io.ktor.server.response.*
-import io.ktor.server.http.content.*
 import io.ktor.server.application.*
+import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
+    val userRepository: UserRepository by inject()
 
     routing {
-        userRoutes()
+        createUserRoutes(userRepository)
+        loginUser(userRepository)
     }
 }
