@@ -38,6 +38,7 @@ dependencies {
     implementation("io.ktor:ktor-server-default-headers-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-gson-jvm:$ktor_version")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
@@ -69,5 +70,7 @@ dependencies {
 
     // GSON
     implementation("com.google.code.gson:gson:2.10.1")
-    testImplementation("org.testng:testng:7.1.0")
+
+    // testng
+    testImplementation("org.testng:testng:7.7.0")
 }

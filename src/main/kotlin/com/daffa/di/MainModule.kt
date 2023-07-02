@@ -2,6 +2,8 @@ package com.daffa.di
 
 import com.daffa.data.repository.follow.FollowRepository
 import com.daffa.data.repository.follow.FollowRepositoryImpl
+import com.daffa.data.repository.post.PostRepository
+import com.daffa.data.repository.post.PostRepositoryImpl
 import com.daffa.data.repository.user.UserRepository
 import com.daffa.data.repository.user.UserRepositoryImpl
 import com.daffa.util.Constants
@@ -22,5 +24,9 @@ val mainModule = module {
 
     single<FollowRepository> {
         FollowRepositoryImpl(get())
+    }
+
+    single<PostRepository> {
+        PostRepositoryImpl(get())
     }
 }
