@@ -5,6 +5,7 @@ import com.daffa.data.models.User
 import com.daffa.data.requests.CreateAccountRequest
 import com.daffa.data.requests.LoginRequest
 import com.daffa.data.responses.BasicApiResponse
+import com.daffa.service.UserService
 import com.daffa.util.ApiResponseMessages
 import com.daffa.util.ApiResponseMessages.FIELDS_BLANK
 import com.daffa.util.ApiResponseMessages.USER_ALREADY_EXISTS
@@ -14,7 +15,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.createUserRoutes(userRepository: UserRepository) {
+fun Route.createUserRoutes(userService: UserService) {
 
     route("/api/user/create") {
         post {
@@ -23,8 +24,7 @@ fun Route.createUserRoutes(userRepository: UserRepository) {
                 return@post
             }
 
-            val userExists = userRepository.getUserByEmail(request.email) != null
-            if (userExists) {
+            if (userService.doesUserWithEmailExist(request.email)) {
                 call.respond(
                     BasicApiResponse(
                         successful = false,
@@ -34,28 +34,24 @@ fun Route.createUserRoutes(userRepository: UserRepository) {
                 return@post
             }
 
-            if (request.email.isBlank() || request.password.isBlank() || request.username.isBlank()) {
-                call.respond(
-                    BasicApiResponse(
-                        successful = false,
-                        message = FIELDS_BLANK
+            when(userService.validateCreateAccountRequest(request)) {
+                is UserService.ValidationEvent.ErrorFieldEmpty -> {
+                    call.respond(
+                        BasicApiResponse(
+                            successful = false,
+                            message = FIELDS_BLANK
+                        )
                     )
-                )
-                return@post
+                    return@post
+                }
+                is UserService.ValidationEvent.Success -> {
+                    userService.createUser(request)
+                    call.respond(
+                        BasicApiResponse(successful = true)
+                    )
+                }
             }
 
-            userRepository.createUser(
-                User(
-                    email = request.email,
-                    username = request.username,
-                    password = request.password,
-                    profileImageUrl = "",
-                    bio = "bio test",
-                    gitHubUrl = null,
-                    instagramUrl = null,
-                    linkedInUrl = null
-                )
-            )
             call.respond(
                 BasicApiResponse(successful = true)
             )

@@ -4,6 +4,7 @@ import com.daffa.data.models.Post
 import com.daffa.data.repository.post.PostRepository
 import com.daffa.data.requests.CreatePostRequest
 import com.daffa.data.responses.BasicApiResponse
+import com.daffa.service.PostService
 import com.daffa.util.ApiResponseMessages
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -12,7 +13,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.createPostRoute(
-    postRepository: PostRepository
+    postService: PostService
 ) {
     post("/api/post/create") {
         val request = kotlin.runCatching { call.receiveNullable<CreatePostRequest>() }.getOrNull() ?: run {
@@ -20,28 +21,21 @@ fun Route.createPostRoute(
             return@post
         }
 
-        val didUserExist = postRepository.createPostIfUserExists(
-            Post(
-                imageUrl = "",
-                userId = request.userId,
-                timestamp = System.currentTimeMillis(),
-                description = request.description
-            )
-        )
+        val didUserExist = postService.createPostIfUserExist(request)
 
-        if (!didUserExist) {
+        if (didUserExist) {
             call.respond(
-                HttpStatusCode.NotFound,
+                HttpStatusCode.OK,
                 BasicApiResponse(
-                    successful = false,
-                    message = ApiResponseMessages.USER_NOT_FOUND
+                    successful = true
                 )
             )
         } else {
             call.respond(
                 HttpStatusCode.OK,
                 BasicApiResponse(
-                    successful = true
+                    successful = false,
+                    message = ApiResponseMessages.USER_NOT_FOUND
                 )
             )
         }

@@ -1,8 +1,8 @@
 package com.daffa.routes
 
-import com.daffa.data.repository.follow.FollowRepository
 import com.daffa.data.requests.FollowUpdateRequest
 import com.daffa.data.responses.BasicApiResponse
+import com.daffa.service.FollowService
 import com.daffa.util.ApiResponseMessages
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -11,7 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.followUser(
-    followRepository: FollowRepository
+    followService: FollowService
 ) {
     post("/api/following/follow") {
         val request = runCatching<FollowUpdateRequest?> { call.receiveNullable<FollowUpdateRequest>() }.getOrNull() ?: kotlin.run {
@@ -19,10 +19,7 @@ fun Route.followUser(
             return@post
         }
 
-        val didUserExist = followRepository.followUserIfExists(
-            followingUserId = request.followingUserId,
-            followedUserId = request.followedUserId
-        )
+        val didUserExist = followService.followUserIfExist(request)
         if (didUserExist)
             call.respond(
                 HttpStatusCode.OK,
@@ -42,7 +39,7 @@ fun Route.followUser(
 }
 
 fun Route.unfollowUser(
-    followRepository: FollowRepository
+    followService: FollowService
 ) {
     delete("/api/following/unfollow") {
         val request = runCatching<FollowUpdateRequest?> { call.receiveNullable<FollowUpdateRequest>() }.getOrNull() ?: kotlin.run {
@@ -50,10 +47,7 @@ fun Route.unfollowUser(
             return@delete
         }
 
-        val didUserExist = followRepository.unfollowUserIfExists(
-            followingUserId = request.followingUserId,
-            followedUserId = request.followedUserId
-        )
+        val didUserExist = followService.unfollowUserIfExist(request)
 
         if (didUserExist)
             call.respond(
