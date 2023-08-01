@@ -3,6 +3,7 @@ package com.daffa.service
 import com.daffa.data.models.User
 import com.daffa.data.repository.user.UserRepository
 import com.daffa.data.requests.CreateAccountRequest
+import com.daffa.data.requests.LoginRequest
 import com.daffa.data.responses.BasicApiResponse
 import com.daffa.util.ApiResponseMessages
 import io.ktor.server.application.*
@@ -14,6 +15,13 @@ class UserService(
 
     suspend fun doesUserWithEmailExist(email: String): Boolean {
         return repository.getUserByEmail(email) != null
+    }
+
+    suspend fun doesPasswordMatchForUser(request: LoginRequest): Boolean {
+        return repository.doesPasswordForUserMatch(
+            email = request.email,
+            enteredPassword = request.password
+        )
     }
 
     suspend fun createUser(request: CreateAccountRequest) {

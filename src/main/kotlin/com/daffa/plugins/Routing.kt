@@ -24,7 +24,7 @@ fun Application.configureRouting() {
     routing {
         // User routes
         createUserRoutes(userService)
-        loginUser(userRepository)
+        loginUser(userService)
 
         // Following routes
         followUser(followService)

@@ -61,7 +61,7 @@ fun Route.createUserRoutes(userService: UserService) {
 
 
 fun Route.loginUser(
-    userRepository: UserRepository
+    userService: UserService
 ) {
     post("/api/user/login") {
         val request =
@@ -75,10 +75,7 @@ fun Route.loginUser(
             return@post
         }
 
-        val isCorrectPassword = userRepository.doesPasswordForUserMatch(
-            email = request.email,
-            enteredPassword = request.password
-        )
+        val isCorrectPassword = userService.doesPasswordMatchForUser(request)
 
         if(isCorrectPassword) {
             call.respond(
