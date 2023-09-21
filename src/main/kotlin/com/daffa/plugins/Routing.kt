@@ -36,5 +36,9 @@ fun Application.configureRouting() {
             postService,
             userService
         )
+        getPostForFollows(
+            postService,
+            userService
+        )
     }
 }
