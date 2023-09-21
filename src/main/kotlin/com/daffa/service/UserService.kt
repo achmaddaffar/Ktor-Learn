@@ -24,6 +24,10 @@ class UserService(
         )
     }
 
+    suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean {
+        return repository.doesEmailBelongToUserId(email, userId)
+    }
+
     suspend fun createUser(request: CreateAccountRequest) {
         repository.createUser(
             User(

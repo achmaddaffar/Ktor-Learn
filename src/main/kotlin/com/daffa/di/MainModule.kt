@@ -21,27 +21,16 @@ val mainModule = module {
         client.getDatabase(Constants.DATABASE_NAME)
     }
 
-    single<UserRepository> {
-        UserRepositoryImpl(get())
-    }
+    single<UserRepository> { UserRepositoryImpl(get()) }
 
-    single {
-        UserService(get())
-    }
+    single { UserService(get()) }
 
-    single<FollowRepository> {
-        FollowRepositoryImpl(get())
-    }
+    single<FollowRepository> { FollowRepositoryImpl(get()) }
 
-    single {
-        FollowService(get())
-    }
+    single { FollowService(get()) }
 
-    single<PostRepository> {
-        PostRepositoryImpl(get())
-    }
+    single<PostRepository> { PostRepositoryImpl(get()) }
 
-    single {
-        PostService(get())
-    }
+    single { PostService(get()) }
+
 }

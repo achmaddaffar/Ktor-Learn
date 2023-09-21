@@ -34,3 +34,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Environment Variable (application.conf)
+/src/main/resources/application.conf
