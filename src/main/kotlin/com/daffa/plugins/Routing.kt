@@ -2,6 +2,7 @@ package com.daffa.plugins
 
 import com.daffa.routes.*
 import com.daffa.service.FollowService
+import com.daffa.service.LikeService
 import com.daffa.service.PostService
 import com.daffa.service.UserService
 import io.ktor.server.application.*
@@ -12,6 +13,7 @@ fun Application.configureRouting() {
     val userService: UserService by inject()
     val followService: FollowService by inject()
     val postService: PostService by inject()
+    val likeService: LikeService by inject()
 
     val jwtIssuer = environment.config.property("jwt.domain").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
@@ -19,7 +21,7 @@ fun Application.configureRouting() {
 
     routing {
         // User routes
-        createUserRoutes(userService)
+        createUser(userService)
         loginUser(
             userService = userService,
             jwtIssuer = jwtIssuer,
@@ -32,12 +34,27 @@ fun Application.configureRouting() {
         unfollowUser(followService)
 
         // Post routes
-        createPostRoute(
+        createPost(
             postService,
             userService
         )
         getPostForFollows(
             postService,
+            userService
+        )
+        deletePost(
+            postService,
+            userService,
+            likeService
+        )
+
+        // Like routes
+        likeParent(
+            likeService,
+            userService
+        )
+        unlikeParent(
+            likeService,
             userService
         )
     }

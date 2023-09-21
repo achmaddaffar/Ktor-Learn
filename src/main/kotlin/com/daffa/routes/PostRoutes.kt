@@ -1,10 +1,9 @@
 package com.daffa.routes
 
-import com.daffa.data.models.Post
-import com.daffa.data.repository.post.PostRepository
 import com.daffa.data.requests.CreatePostRequest
+import com.daffa.data.requests.DeletePostRequest
 import com.daffa.data.responses.BasicApiResponse
-import com.daffa.plugins.email
+import com.daffa.service.LikeService
 import com.daffa.service.PostService
 import com.daffa.service.UserService
 import com.daffa.util.ApiResponseMessages
@@ -14,12 +13,11 @@ import com.daffa.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.createPostRoute(
+fun Route.createPost(
     postService: PostService,
     userService: UserService
 ) {
@@ -84,6 +82,36 @@ fun Route.getPostForFollows(
                     HttpStatusCode.OK,
                     posts
                 )
+            }
+        }
+    }
+}
+
+fun Route.deletePost(
+    postService: PostService,
+    userService: UserService,
+    likeService: LikeService
+) {
+    authenticate {
+        delete("/api/post/delete") {
+            val request = kotlin.runCatching { call.receiveNullable<DeletePostRequest>() }.getOrNull() ?: run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@delete
+            }
+            val post = postService.getPost(request.postId)
+            if (post == null)
+                call.respond(
+                    HttpStatusCode.NotFound
+                ).also { return@delete }
+            ifEmailBelongsToUser(
+                userId = post?.userId ?: String.Empty,
+                validateEmail = userService::doesEmailBelongToUserId
+            ) {
+                postService.deletePost(request.postId)
+                likeService.deleteLikesForParent(request.postId)
+
+                // TODO: Delete comments from post
+                call.respond(HttpStatusCode.OK)
             }
         }
     }

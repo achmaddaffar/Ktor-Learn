@@ -7,7 +7,6 @@ import com.daffa.di.testModule
 import com.daffa.plugins.configureSerialization
 import com.daffa.repository.user.FakeUserRepository
 import com.daffa.util.ApiResponseMessages
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import com.google.gson.Gson
 import io.ktor.http.*
@@ -48,7 +47,7 @@ internal class CreateUserRoutesKtTest : KoinTest {
         withTestApplication(
             moduleFunction = {
                 install(Routing) {
-                    createUserRoutes(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
@@ -81,7 +80,7 @@ internal class CreateUserRoutesKtTest : KoinTest {
             moduleFunction = {
                 configureSerialization()
                 install(Routing) {
-                    createUserRoutes(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
@@ -114,7 +113,7 @@ internal class CreateUserRoutesKtTest : KoinTest {
             moduleFunction = {
                 configureSerialization()
                 install(Routing) {
-                    createUserRoutes(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
@@ -147,7 +146,7 @@ internal class CreateUserRoutesKtTest : KoinTest {
             moduleFunction = {
                 configureSerialization()
                 install(Routing) {
-                    createUserRoutes(userRepository)
+                    createUser(userRepository)
                 }
             }
         ) {
