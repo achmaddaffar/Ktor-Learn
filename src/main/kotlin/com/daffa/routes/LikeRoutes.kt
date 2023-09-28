@@ -1,6 +1,5 @@
 package com.daffa.routes
 
-import com.daffa.data.requests.DeletePostRequest
 import com.daffa.data.requests.LikeUpdateRequest
 import com.daffa.data.responses.BasicApiResponse
 import com.daffa.service.LikeService

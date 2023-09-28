@@ -1,5 +1,7 @@
 package com.daffa.di
 
+import com.daffa.data.repository.comment.CommentRepository
+import com.daffa.data.repository.comment.CommentRepositoryImpl
 import com.daffa.data.repository.follow.FollowRepository
 import com.daffa.data.repository.follow.FollowRepositoryImpl
 import com.daffa.data.repository.likes.LikeRepository
@@ -8,10 +10,7 @@ import com.daffa.data.repository.post.PostRepository
 import com.daffa.data.repository.post.PostRepositoryImpl
 import com.daffa.data.repository.user.UserRepository
 import com.daffa.data.repository.user.UserRepositoryImpl
-import com.daffa.service.FollowService
-import com.daffa.service.LikeService
-import com.daffa.service.PostService
-import com.daffa.service.UserService
+import com.daffa.service.*
 import com.daffa.util.Constants
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
@@ -35,4 +34,7 @@ val mainModule = module {
 
     single<LikeRepository> { LikeRepositoryImpl(get()) }
     single { LikeService(get()) }
+
+    single<CommentRepository> { CommentRepositoryImpl(get()) }
+    single { CommentService(get()) }
 }
