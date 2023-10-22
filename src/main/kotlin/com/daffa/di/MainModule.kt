@@ -1,5 +1,7 @@
 package com.daffa.di
 
+import com.daffa.data.repository.activity.ActivityRepository
+import com.daffa.data.repository.activity.ActivityRepositoryImpl
 import com.daffa.data.repository.comment.CommentRepository
 import com.daffa.data.repository.comment.CommentRepositoryImpl
 import com.daffa.data.repository.follow.FollowRepository
@@ -12,6 +14,7 @@ import com.daffa.data.repository.user.UserRepository
 import com.daffa.data.repository.user.UserRepositoryImpl
 import com.daffa.service.*
 import com.daffa.util.Constants
+import com.mongodb.ConnectionString
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
 import org.litote.kmongo.reactivestreams.KMongo
@@ -37,4 +40,7 @@ val mainModule = module {
 
     single<CommentRepository> { CommentRepositoryImpl(get()) }
     single { CommentService(get()) }
+
+    single<ActivityRepository> { ActivityRepositoryImpl(get()) }
+    single { ActivityService(get(), get(), get()) }
 }

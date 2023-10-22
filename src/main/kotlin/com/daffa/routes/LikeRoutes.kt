@@ -2,8 +2,9 @@ package com.daffa.routes
 
 import com.daffa.data.requests.LikeUpdateRequest
 import com.daffa.data.responses.BasicApiResponse
+import com.daffa.data.util.ParentType
+import com.daffa.service.ActivityService
 import com.daffa.service.LikeService
-import com.daffa.service.UserService
 import com.daffa.util.ApiResponseMessages
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -14,6 +15,7 @@ import io.ktor.server.routing.*
 
 fun Route.likeParent(
     likeService: LikeService,
+    activityService: ActivityService
 ) {
     authenticate {
         post("/api/like") {
@@ -24,15 +26,23 @@ fun Route.likeParent(
 
             val likeSuccessful = likeService.likeParent(
                 call.userId,
-                request.parentId
+                request.parentId,
+                request.parentType
             )
-            if (likeSuccessful)
+            val userId = call.userId
+            if (likeSuccessful) {
+                activityService.addLikeActivity(
+                    byUserId = userId,
+                    parentType = ParentType.fromType(request.parentType),
+                    parentId = request.parentId
+                )
                 call.respond(
                     HttpStatusCode.OK,
                     BasicApiResponse(
                         successful = true
                     )
                 )
+            }
             else
                 call.respond(
                     HttpStatusCode.OK,

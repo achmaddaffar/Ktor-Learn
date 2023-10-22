@@ -3,6 +3,7 @@ package com.daffa.routes
 import com.daffa.data.requests.CreatePostRequest
 import com.daffa.data.requests.DeletePostRequest
 import com.daffa.data.responses.BasicApiResponse
+import com.daffa.service.CommentService
 import com.daffa.service.LikeService
 import com.daffa.service.PostService
 import com.daffa.service.UserService
@@ -75,8 +76,8 @@ fun Route.getPostForFollows(
 
 fun Route.deletePost(
     postService: PostService,
-    userService: UserService,
-    likeService: LikeService
+    likeService: LikeService,
+    commentService: CommentService
 ) {
     authenticate {
         delete("/api/post/delete") {
@@ -94,8 +95,7 @@ fun Route.deletePost(
             if (post?.userId == call.userId) {
                 postService.deletePost(request.postId)
                 likeService.deleteLikesForParent(request.postId)
-
-                // TODO: Delete comments from post
+                commentService.deleteCommentsForPost(request.postId)
                 call.respond(HttpStatusCode.OK)
             } else {
                 call.respond(HttpStatusCode.Unauthorized)

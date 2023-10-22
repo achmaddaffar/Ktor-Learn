@@ -3,6 +3,7 @@ package com.daffa.routes
 import com.daffa.data.requests.CreateCommentRequest
 import com.daffa.data.requests.DeleteCommentRequest
 import com.daffa.data.responses.BasicApiResponse
+import com.daffa.service.ActivityService
 import com.daffa.service.CommentService
 import com.daffa.service.LikeService
 import com.daffa.service.UserService
@@ -17,6 +18,7 @@ import io.ktor.server.routing.*
 
 fun Route.createComment(
     commentService: CommentService,
+    activityService: ActivityService
 ) {
     authenticate {
         post("/api/comment/create") {
@@ -24,7 +26,7 @@ fun Route.createComment(
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
             }
-
+            val userId = call.userId
             when(commentService.createComment(request, call.userId)) {
                 is CommentService.ValidationEvent.ErrorFieldEmpty -> {
                     call.respond(
@@ -45,6 +47,10 @@ fun Route.createComment(
                     )
                 }
                 is CommentService.ValidationEvent.Success -> {
+                    activityService.addCommentActivity(
+                        byUserId = userId,
+                        postId = request.postId
+                    )
                     call.respond(
                         HttpStatusCode.OK,
                         BasicApiResponse(

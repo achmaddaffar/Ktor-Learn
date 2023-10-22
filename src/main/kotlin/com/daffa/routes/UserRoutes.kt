@@ -21,7 +21,7 @@ fun Route.createUser(userService: UserService) {
 
     route("/api/user/create") {
         post {
-            val request = kotlin.runCatching<CreateAccountRequest?> { call.receiveNullable<CreateAccountRequest>() }.getOrNull() ?: kotlin.run {
+            val request = runCatching<CreateAccountRequest?> { call.receiveNullable<CreateAccountRequest>() }.getOrNull() ?: kotlin.run {
                 call.respond(HttpStatusCode.BadRequest)
                 return@post
             }

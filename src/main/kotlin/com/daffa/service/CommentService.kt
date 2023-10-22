@@ -26,6 +26,10 @@ class CommentService(
         return ValidationEvent.Success
     }
 
+    suspend fun deleteCommentsForPost(postId: String): Boolean {
+        return repository.deleteCommentsFromPost(postId)
+    }
+
     suspend fun deleteComment(commentId: String): Boolean {
         return repository.deleteComment(commentId)
     }
@@ -39,8 +43,8 @@ class CommentService(
     }
 
     sealed class ValidationEvent {
-        object ErrorFieldEmpty: ValidationEvent()
-        object ErrorCommentTooLong: ValidationEvent()
-        object Success: ValidationEvent()
+        object ErrorFieldEmpty : ValidationEvent()
+        object ErrorCommentTooLong : ValidationEvent()
+        object Success : ValidationEvent()
     }
 }

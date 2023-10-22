@@ -22,4 +22,8 @@ class FakeUserRepository : UserRepository {
         val user = getUserByEmail(email)
         return user?.password == enteredPassword
     }
+
+    override suspend fun doesEmailBelongToUserId(email: String, userId: String): Boolean {
+        TODO("Not yet implemented")
+    }
 }
