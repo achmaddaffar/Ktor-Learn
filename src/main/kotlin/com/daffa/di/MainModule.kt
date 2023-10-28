@@ -27,7 +27,7 @@ val mainModule = module {
     }
 
     single<UserRepository> { UserRepositoryImpl(get()) }
-    single { UserService(get()) }
+    single { UserService(get(), get()) }
 
     single<FollowRepository> { FollowRepositoryImpl(get()) }
     single { FollowService(get()) }
