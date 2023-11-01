@@ -3,8 +3,10 @@ package com.daffa.plugins
 import com.daffa.routes.*
 import com.daffa.service.*
 import io.ktor.server.application.*
+import io.ktor.server.http.content.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
+import java.io.File
 
 fun Application.configureRouting() {
     val userService: UserService by inject()
@@ -28,6 +30,9 @@ fun Application.configureRouting() {
             jwtSecret = jwtSecret
         )
         searchUser(userService)
+        getUserProfile(userService)
+        getPostForProfile(postService)
+        updateUserProfile(userService)
 
         // Following routes
         followUser(followService, activityService)
@@ -44,7 +49,7 @@ fun Application.configureRouting() {
 
         // Like routes
         likeParent(likeService, activityService)
-        unlikeParent(likeService,)
+        unlikeParent(likeService)
 
         // Comment routes
         createComment(commentService, activityService)
@@ -53,5 +58,11 @@ fun Application.configureRouting() {
 
         // Activity routes
         getActivities(activityService)
+
+        // static resources
+//        static {
+//            resources("static")
+//        }
+        staticResources("", "static")
     }
 }

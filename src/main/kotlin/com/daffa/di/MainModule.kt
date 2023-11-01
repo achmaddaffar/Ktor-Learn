@@ -14,6 +14,7 @@ import com.daffa.data.repository.user.UserRepository
 import com.daffa.data.repository.user.UserRepositoryImpl
 import com.daffa.service.*
 import com.daffa.util.Constants
+import com.google.gson.Gson
 import com.mongodb.ConnectionString
 import org.koin.dsl.module
 import org.litote.kmongo.coroutine.coroutine
@@ -43,4 +44,6 @@ val mainModule = module {
 
     single<ActivityRepository> { ActivityRepositoryImpl(get()) }
     single { ActivityService(get(), get(), get()) }
+
+    single { Gson() }
 }
