@@ -1,6 +1,8 @@
 package com.daffa.data.repository.likes
 
+import com.daffa.data.models.Like
 import com.daffa.data.util.ParentType
+import com.daffa.util.Constants
 
 interface LikeRepository {
 
@@ -9,4 +11,10 @@ interface LikeRepository {
     suspend fun unlikeParent(userId: String, parentId: String): Boolean
 
     suspend fun deleteLikesForParent(parentId: String)
+
+    suspend fun getLikesForParent(
+        parentId: String,
+        page: Int = 0,
+        pageSize: Int = Constants.DEFAULT_ACTIVITY_PAGE_SIZE
+    ): List<Like>
 }

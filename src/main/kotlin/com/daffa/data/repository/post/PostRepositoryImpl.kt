@@ -40,9 +40,7 @@ class PostRepositoryImpl(
         return posts.find(
             Post::userId `in` userIdsFromFollows
         )
-            .descendingSort(
-                Post::timestamp
-            )
+            .descendingSort(Post::timestamp)
             .skip(page * pageSize)
             .limit(pageSize)
             .toList()
@@ -56,9 +54,7 @@ class PostRepositoryImpl(
         return posts.find(
             Post::userId `in` userId
         )
-            .descendingSort(
-                Post::timestamp
-            )
+            .descendingSort(Post::timestamp)
             .skip(page * pageSize)
             .limit(pageSize)
             .toList()

@@ -6,6 +6,7 @@ import com.daffa.data.util.ParentType
 import com.daffa.service.ActivityService
 import com.daffa.service.LikeService
 import com.daffa.util.ApiResponseMessages
+import com.daffa.util.QueryParams
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -84,6 +85,26 @@ fun Route.unlikeParent(
                         message = ApiResponseMessages.USER_NOT_FOUND
                     )
                 )
+        }
+    }
+}
+
+fun Route.getLikesForParent(likeService: LikeService) {
+    authenticate {
+        get("/api/like/parent") {
+            val parentId = call.parameters[QueryParams.PARAM_PARENT_ID] ?: run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@get
+            }
+
+            val usersWhoLikedParent = likeService.getUsersWhoLikedParent(
+                parentId = parentId,
+                userId = call.userId
+            )
+            call.respond(
+                HttpStatusCode.OK,
+                usersWhoLikedParent
+            )
         }
     }
 }
