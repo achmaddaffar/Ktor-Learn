@@ -6,47 +6,70 @@ import com.daffa.data.responses.BasicApiResponse
 import com.daffa.service.CommentService
 import com.daffa.service.LikeService
 import com.daffa.service.PostService
-import com.daffa.service.UserService
-import com.daffa.util.ApiResponseMessages
 import com.daffa.util.Constants
-import com.daffa.util.Constants.Empty
 import com.daffa.util.QueryParams
+import com.daffa.util.save
+import com.google.gson.Gson
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
+import java.io.File
 
 fun Route.createPost(
     postService: PostService,
 ) {
+    val gson by inject<Gson>()
     authenticate {
         post("/api/post/create") {
-            val request = kotlin.runCatching { call.receiveNullable<CreatePostRequest>() }.getOrNull() ?: run {
-                call.respond(HttpStatusCode.BadRequest)
-                return@post
+            val multipart = call.receiveMultipart()
+            var createPostRequest: CreatePostRequest? = null
+            var fileName: String? = null
+            multipart.forEachPart { partData ->
+                when (partData) {
+                    is PartData.FormItem -> {
+                        if (partData.name == "post_data") {
+                            createPostRequest = gson.fromJson(
+                                partData.value,
+                                CreatePostRequest::class.java
+                            )
+                        }
+                    }
+
+                    is PartData.FileItem -> {
+                        fileName = partData.save(Constants.POST_PICTURE_PATH)
+                    }
+
+                    else -> Unit
+                }
+                partData.dispose()
             }
 
-            val userId = call.userId
-
-            val didUserExist = postService.createPostIfUserExist(request, userId)
-
-            if (didUserExist) {
-                call.respond(
-                    HttpStatusCode.OK,
-                    BasicApiResponse(
-                        successful = true
-                    )
+            createPostRequest?.let { request ->
+                val postPictureUrl = "${Constants.BASE_URL}post_pictures/$fileName"
+                val createPostAcknowledged = postService.createPost(
+                    request = request,
+                    userId = call.userId,
+                    imageUrl = postPictureUrl
                 )
-            } else {
-                call.respond(
-                    HttpStatusCode.OK,
-                    BasicApiResponse(
-                        successful = false,
-                        message = ApiResponseMessages.USER_NOT_FOUND
+                if (createPostAcknowledged) {
+                    call.respond(
+                        HttpStatusCode.OK,
+                        BasicApiResponse(
+                            successful = true
+                        )
                     )
-                )
+                } else {
+                    File("${Constants.POST_PICTURE_PATH}/$fileName").delete()
+                    call.respond(HttpStatusCode.InternalServerError)
+                }
+            } ?: run {
+                call.respond(HttpStatusCode.BadRequest)
+                return@post
             }
         }
     }

@@ -9,6 +9,7 @@ object Constants {
 
     const val BASE_URL = "http://localhost:8004/"
     const val PROFILE_PICTURE_PATH = "build/resources/main/static/profile_pictures/"
+    const val POST_PICTURE_PATH = "build/resources/main/static/post_pictures/"
 
     inline val String.Companion.Empty
         get() = ""

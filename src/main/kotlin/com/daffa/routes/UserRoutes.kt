@@ -17,6 +17,7 @@ import com.daffa.util.Constants
 import com.daffa.util.Constants.BASE_URL
 import com.daffa.util.Constants.PROFILE_PICTURE_PATH
 import com.daffa.util.QueryParams
+import com.daffa.util.save
 import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.http.content.*
@@ -234,18 +235,7 @@ fun Route.updateUserProfile(
                     }
 
                     is PartData.FileItem -> {
-                        val fileBytes = partData.streamProvider().readBytes()
-                        val fileExtension = partData.originalFileName?.takeLastWhile { it != '.' }
-                        fileName = UUID.randomUUID().toString() + "." + fileExtension
-//                        File("build/$PROFILE_PICTURE_PATH$fileName").writeBytes(fileBytes)
-                        File("$PROFILE_PICTURE_PATH$fileName").writeBytes(fileBytes)
-
-//                        val file = File("src/main/$PROFILE_PICTURE_PATH", "$fileName")
-//                        partData.streamProvider().use { input ->
-//                            file.outputStream().buffered().use { output ->
-//                                input.copyToSuspend(output)
-//                            }
-//                        }
+                        fileName = partData.save(PROFILE_PICTURE_PATH)
                     }
 
                     else -> Unit
