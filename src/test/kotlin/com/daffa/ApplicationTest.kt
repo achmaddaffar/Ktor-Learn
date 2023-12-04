@@ -6,6 +6,7 @@ import io.ktor.server.testing.*
 import kotlin.test.*
 import io.ktor.http.*
 import com.daffa.plugins.*
+import org.junit.jupiter.api.Test
 
 class ApplicationTest {
     @Test

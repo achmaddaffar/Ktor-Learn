@@ -1,6 +1,5 @@
 package com.daffa.data.models
 
-import com.daffa.data.responses.ProfileResponse
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 

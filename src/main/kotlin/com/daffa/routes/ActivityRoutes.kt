@@ -1,7 +1,6 @@
 package com.daffa.routes
 
 import com.daffa.service.ActivityService
-import com.daffa.service.PostService
 import com.daffa.util.Constants
 import com.daffa.util.QueryParams
 import io.ktor.http.*

@@ -20,8 +20,7 @@ class PostRepositoryImpl(
     }
 
     override suspend fun deletePost(postId: String): Boolean {
-        posts.deleteOneById(postId)
-        return true
+        return posts.deleteOneById(postId).wasAcknowledged()
     }
 
     override suspend fun getPostByFollows(
